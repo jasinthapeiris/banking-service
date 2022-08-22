@@ -1,20 +1,19 @@
 /*
- *     Copyright (c) 1995-2022,  The Data Management Group Ltd   All Rights Reserved.
- *     *  PROPRIETARY AND COPYRIGHT NOTICE.
+ *  @author Jasintha Peiris
+ *  @version 0.0.1 2022/08/22
+ *  E-Mail jasinthaamakara@gmail.com
  *
- *        This software product contains information which is proprietary to
- *        and considered a trade secret The Data management Group Ltd .
- *        It is expressly agreed that it shall not be reproduced in whole or part,
- *        disclosed, divulged or otherwise made available to any third party directly
- *        or indirectly.  Reproduction of this product for any purpose is prohibited
- *        without written authorisation from the The Data Management Group Ltd
- *        All Rights Reserved.
- *
- *        E-Mail andyj@datam.co.uk
- *        URL : www.datam.co.uk
- *        Created By :Jasintha Peiris
+ *  Copyright (c), Jasintha Peiris  All Rights Reserved.
+ *  PROPRIETARY AND COPYRIGHT NOTICE.
+ *  This software product contains information which is proprietary to
+ *  and considered a trade secret Jasintha Peiris .
+ *  It is expressly agreed that it shall not be reproduced in whole or part,
+ *  disclosed, divulged or otherwise made available to any third party directly
+ *  or indirectly.  Reproduction of this product for any purpose is prohibited
+ *  without written authorization from the Jasintha Peiris
+ *  All Rights Reserved.
  */
-package lk.dmg.rmsstandard.model;
+package lk.example.bankingservice.model;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +26,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Getter;
 import lombok.Setter;
 /**
- * Date :2022-05-12 This class process the StandardNew model class model class
+ * Date :2022-08-22 This class process the Account model class
  * 
  * @author Jasintha Peiris
  */

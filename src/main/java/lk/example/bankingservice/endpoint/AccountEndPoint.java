@@ -19,18 +19,18 @@ package lk.example.bankingservice.endpoint;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import lk.dmg.rmsstandard.model.Account;
+import lk.example.bankingservice.exception.ResourceNotFoundException;
+import lk.example.bankingservice.model.Account;
 import lk.example.bankingservice.service.AccountService;
 import lk.example.bankingservice.util.Constant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 /**
  * @author Jasintha Peiris
- * @version 0.0.1 2022/08/08 This class process the Account operation endpoint
- * class
  */
 @Slf4j 
 @RestController
@@ -38,147 +38,106 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__({ @Autowired }))
 public class AccountEndPoint {
 
-	private final AccountService standardService;
+	private final AccountService accountService;
 
 	/**
-	 * getAllUnits
-	 * 
+	 * getAll
 	 * @return responseEntity
 	 */
-	@GetMapping("/Account")
+	@GetMapping("/all")
 	@ResponseBody
-	public ResponseEntity<List<Account>> getAllUnits(@ModelAttribute Account Account) {
-		if (log.isDebugEnabled()) {
-			log.info("UnitController getAllunits method calling.");
-		}
-		List<Account> allUnits = standardService.findAllUnits(Account);
-		if (allUnits.isEmpty()) {
+	public ResponseEntity<List<Account>> getAll() {
+		log.info("AccountEndPoint getAllunits method calling.");
+		List<Account> allAccounts = accountService.findAllAccounts();
+		if (allAccounts.isEmpty()) {
 			throw new ResourceNotFoundException(Constant.DATA_NOT_FOUND);
 		}
-		ResponseEntity<List<Account>> responseEntity = new ResponseEntity<>(allUnits, HttpStatus.OK);
+		ResponseEntity<List<Account>> responseEntity = new ResponseEntity<>(allAccounts, HttpStatus.OK);
 		return responseEntity;
 	}
 
 	/**
-	 * getAllActiveUnits
-	 * 
-	 * @return responseEntity
-	 */
-	@GetMapping("/units/active")
-	@ResponseBody
-	public ResponseEntity<List<Account>> getAllActiveunits(@ModelAttribute Account Account) {
-		if (log.isDebugEnabled()) {
-			log.info("UnitController getAllActiveUnits method calling.");
-		}
-		List<Account> allActiveUnits = unitService.findAllActiveUnits(Account);
-		if (allActiveUnits.isEmpty()) {
-			throw new ResourceNotFoundException(Constants.ACTIVE_DATA_NOT_FOUND);
-		}
-		ResponseEntity<List<Account>> responseEntity = new ResponseEntity<>(allActiveUnits, HttpStatus.OK);
-		return responseEntity;
-
-	}
-
-	/**
-	 * getUnits using Account id
-	 * 
+	 * getById 
 	 * @param id
 	 * @return responseEntity
 	 */
-	@GetMapping("/Account/{id}")
-	public ResponseEntity<Account> getUnits(@PathVariable int id) {
-		if (log.isDebugEnabled()) {
-			log.info("UnitController getUnits method calling.");
+	@GetMapping("/account/{id}")
+	public ResponseEntity<Account> getById(@PathVariable int id) {
+		log.info("AccountEndPoint getUnits method calling.");
+		Account account = accountService.findByAccountId(id);
+		if (account == null) {
+			throw new ResourceNotFoundException(Constant.DATA_NOT_FOUND_FOR_ID + id);
 		}
-		Account getUnit = unitService.findUnit(id);
-		if (getUnit == null) {
-			throw new ResourceNotFoundException(Constants.DATA_NOT_FOUND_FOR_ID + id);
-		}
-		ResponseEntity<Account> responseEntity = new ResponseEntity<>(getUnit, HttpStatus.OK);
+		ResponseEntity<Account> responseEntity = new ResponseEntity<>(account, HttpStatus.OK);
 		return responseEntity;
 
 	}
 
 	/**
-	 * saveUnit
-	 * 
-	 * @param Account
+	 * saveAccount
+	 * @param account
 	 * @return responseEntity
 	 * @throws Exception
 	 */
-	@PostMapping("/Account")
-	public ResponseEntity<Account> saveUnit(@Valid @RequestBody Account Account, Errors errors) throws Exception {
-		if (log.isDebugEnabled()) {
-			log.info("UnitController saveUnit method calling.");
-		}
-
+	@PostMapping("/save")
+	public ResponseEntity<Account> saveAccount(@RequestBody Account account) throws Exception {
+			log.info("AccountEndPoint saveAccount method calling.");
 		try {
-			Account savedUnit = unitService.saveUnit(Account);
-			ResponseEntity<Account> responseEntity = new ResponseEntity<>(savedUnit, HttpStatus.CREATED);
+			Account savedAccount = accountService.saveAccount(account);
+			ResponseEntity<Account> responseEntity = new ResponseEntity<>(savedAccount, HttpStatus.CREATED);
 			return responseEntity;
 		} catch (DataIntegrityViolationException e) {
-			log.error("error occurred by saveUnit in UnitController", e);
-			throw new DataIntegrityViolationException(Constants.INVALIDE_INPUTS);
+			log.error("error occurred by saveAccount in AccountEndPoint", e);
+			throw new DataIntegrityViolationException(Constant.INVALIDE_INPUTS);
 		} catch (Exception e) {
-			log.error("error occurred by saveUnit in UnitController", e);
+			log.error("error occurred by saveAccount in AccountEndPoint", e);
 			throw new Exception(e);
 		}
 
 	}
 
 	/**
-	 * updateUnit
-	 * 
-	 * @param Account
+	 * updateAccount
+	 * @param account
 	 * @return responseEntity
 	 * @throws Exception
 	 */
-	@PutMapping("/Account")
-	public ResponseEntity<Account> updateUnit(@RequestBody Account Account) throws Exception {
-		if (log.isDebugEnabled()) {
-			log.info("UnitController updateUnit method calling.");
-		}
-
-		Account getUnit = unitService.findUnit(Account.getUnitId());
-		if (getUnit == null) {
-			throw new ResourceNotFoundException(Constants.DATA_NOT_FOUND_FOR_ID + Account.getUnitId());
-		}
+	@PutMapping("/update")
+	public ResponseEntity<Account> updateAccount(@RequestBody Account account) throws Exception {
+			log.info("AccountEndPoint updateAccount method calling.");
 		try {
-			Account updatedUnit = unitService.updateUnit(Account);
-			ResponseEntity<Account> responseEntity = new ResponseEntity<>(updatedUnit, HttpStatus.CREATED);
+			Account updatedAccount = accountService.updateAccount(account);
+			ResponseEntity<Account> responseEntity = new ResponseEntity<>(updatedAccount, HttpStatus.CREATED);
 			return responseEntity;
 		} catch (DataIntegrityViolationException e) {
-			log.error("error occurred by updateUnit in UnitController", e);
-			throw new DataIntegrityViolationException(Constants.INVALIDE_INPUTS);
+			log.error("error occurred by updateAccount in AccountEndPoint", e);
+			throw new DataIntegrityViolationException(Constant.INVALIDE_INPUTS);
 		} catch (Exception e) {
-			log.error("error occurred by updateUnit in UnitController", e);
+			log.error("error occurred by updateAccount in AccountEndPoint", e);
 			throw new Exception(e);
 		}
+
 	}
 
 	/**
-	 * deleteUnit
-	 * 
+	 * deleteAccount
 	 * @param id
 	 * @return responseEntity
 	 * @throws Exception
 	 */
-	@DeleteMapping("/Account/{id}")
-	public ResponseEntity<Account> deleteUnit(@PathVariable int id) throws Exception {
-		if (log.isDebugEnabled()) {
-			log.info("UnitController deleteUnit method calling.");
-		}
-
-		Account getUnit = unitService.findUnit(id);
-		if (getUnit == null) {
-			throw new ResourceNotFoundException(Constants.DATA_NOT_FOUND_FOR_ID + id);
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteAccount(@PathVariable int id) throws Exception {
+		log.info("AccountEndPoint deleteAccount method calling.");
+		Account account = accountService.findByAccountId(id);
+		if (account == null) {
+			throw new ResourceNotFoundException(Constant.DATA_NOT_FOUND_FOR_ID + id);
 		}
 		try {
-			Account deletedUnit = unitService.deleteUnit(id);
-			ResponseEntity<Account> responseEntity = new ResponseEntity<>(deletedUnit, HttpStatus.OK);
+			String message = accountService.deleteAccount(id);
+			ResponseEntity<String> responseEntity = new ResponseEntity<>(message, HttpStatus.OK);
 			return responseEntity;
 		} catch (Exception e) {
-			log.error("error occurred by deleteUnit in UnitController", e);
+			log.error("error occurred by deleteAccount in AccountEndPoint", e);
 			throw new Exception(e);
 		}
 	}

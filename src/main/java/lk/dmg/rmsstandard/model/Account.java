@@ -26,7 +26,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Getter;
 import lombok.Setter;
-
 /**
  * Date :2022-05-12 This class process the StandardNew model class model class
  * 

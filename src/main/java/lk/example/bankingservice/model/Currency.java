@@ -13,21 +13,21 @@
  *  without written authorization from the Jasintha Peiris
  *  All Rights Reserved.
  */
-package lk.example.bankingservice.repository;
+package lk.example.bankingservice.model;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-import lk.example.bankingservice.model.Account;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * Date :2022-08-22. This the interface AccountRepository
- *
+ * Date :2022-08-22 This class process the Account model class
+ * 
  * @author Jasintha Peiris
  */
-@Repository
-public interface AccountRepository extends CrudRepository<Account, Integer> {
+@Setter
+@Getter
+public class Currency {
 
-	Account findByAccountNumber(int id);
-
-
+	public String currencyCode;
+	public int numericCode;
+	public double amount;
 }

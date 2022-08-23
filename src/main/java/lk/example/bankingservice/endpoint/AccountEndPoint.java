@@ -116,7 +116,6 @@ public class AccountEndPoint {
 			log.error("error occurred by updateAccount in AccountEndPoint", e);
 			throw new Exception(e);
 		}
-
 	}
 
 	/**

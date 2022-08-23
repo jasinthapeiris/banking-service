@@ -14,20 +14,15 @@
  *  All Rights Reserved.
  */
 package lk.example.bankingservice.model;
-import java.util.Date;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -38,43 +33,33 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "account")
-public class Account{
+@Table(name = "card_detail")
+public class CardDetail{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "account_number",length=10)
-	private Integer accountNumber;	
+	@Column(name = "card_number",length=16)
+	private Integer cardNumber;	
 	
-	@Column(name = "account_name")
-	public String accountName;
+	@Column(name = "cardType")
+	public String cardType;
 	
-	//NIC or passport id number
-	@Column(name = "id_number_type")
-	private String idNumberType;
-	
-	@Column(name = "id_number")
-	private String idNumber;
-	
-	@Column(name = "amount")
-	public String amount;
-	 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
-	Set<CardDetail> cardDetail;
-	
-	@Column(name = "description")
-	public String description;
+	@Column(name = "cardName")
+	public String cardName;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_date")
-	private Date createdDate;
-
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_date")
-	private Date updatedDate;
-
+	@Column(name = "embed_name")
+	private String embedName;
+	
+	@Column(name = "valid_thru_date")
+	private String validThruDate;
+	
+	@Column(name = "card_verification_value_2")
+	public String cardVerificationValue2;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "account_number")
+	private Account account;
+	
 	@Column(name = "is_active")
 	private Boolean isActive;
 

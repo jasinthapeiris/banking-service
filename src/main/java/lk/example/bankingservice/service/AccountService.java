@@ -19,9 +19,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import lk.example.bankingservice.exception.ResourceNotFoundException;
 import lk.example.bankingservice.model.Account;
 import lk.example.bankingservice.repository.AccountRepository;
+import lk.example.bankingservice.util.Constant;
 
 /**
  * Date :2022-08-222. This class process the crud AccountService class
@@ -54,7 +57,7 @@ public class AccountService {
 	 */
 	public Account findByAccountId(int id) {
 		log.debug("AccountService findAccount method calling.");
-		Account account = accountRepository.findByAccountId(id);
+		Account account = accountRepository.findByAccountNumber(id);
 		return account;
 	}
 
@@ -68,6 +71,16 @@ public class AccountService {
 		log.debug("AccountService saveAccount method calling.");
 		account.setCreatedDate(new Date());
 		account.setUpdatedDate(new Date());
+
+		if (StringUtils.isEmpty(account.getAccountName())) {
+			throw new ResourceNotFoundException(Constant.ACCOUNT_NAME_NOT_FOUND);
+		}
+		if (StringUtils.isEmpty(account.getIdNumberType())) {
+			throw new ResourceNotFoundException(Constant.ID_NUMBER_TYPE_NOT_FOUND);
+		}
+		if (StringUtils.isEmpty(account.getIdNumber())) {
+			throw new ResourceNotFoundException(Constant.ID_NUMBER_NOT_FOUND);
+		}
 		Account savedAccount = accountRepository.save(account);
 		return savedAccount;
 	}
@@ -80,7 +93,7 @@ public class AccountService {
 	 */
 	public Account updateAccount(Account account) {
 		log.debug("AccountService updateAccount method calling.");
-		Account existAccount = accountRepository.findByAccountId(account.getAccountId());
+		Account existAccount = accountRepository.findByAccountNumber(account.getAccountNumber());
 		account.setCreatedDate(existAccount.getCreatedDate());
 		account.setUpdatedDate(new Date());
 		Account updatedAccount = accountRepository.save(account);
@@ -96,8 +109,35 @@ public class AccountService {
 	 */
 	public String deleteAccount(int id) {
 		log.debug("AccountService deleteAccount method calling.");
-		Account account = accountRepository.findByAccountId(id);
+		Account account = accountRepository.findByAccountNumber(id);
 		accountRepository.delete(account);
 		return "Account deleted";
 	}
+	
+	
+	
+	
+	/**
+	 * updateAccount
+	 * 
+	 * @param account
+	 * @return updatedAccount
+	 */
+	public Account depositAccount(Account account) {
+		log.debug("AccountService updateAccount method calling.");
+		Account existAccount = accountRepository.findByAccountNumber(account.getAccountNumber());
+		account.setCreatedDate(existAccount.getCreatedDate());
+		account.setUpdatedDate(new Date());
+		Account updatedAccount = accountRepository.save(account);
+		return updatedAccount;
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

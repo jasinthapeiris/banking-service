@@ -29,5 +29,8 @@ public class Constant {
 	public static final String DATA_NOT_FOUND_FOR_CODE = "Data not found for code : ";
 	public static final String INVALIDE_INPUTS = "Required data not completed";
 	public static final String CODE_ALREADY_EXIST = "Code already exist";
-
+	public static final String ACCOUNT_NAME_NOT_FOUND = "Account Name Not Found";
+	public static final String ID_NUMBER_TYPE_NOT_FOUND = "Id Number Type Not Found";
+	public static final String ID_NUMBER_NOT_FOUND = "Id Number Not Found";
+	public static final String EMBED_NAME_NOT_FOUND = "Embed Name Not Found";
 }

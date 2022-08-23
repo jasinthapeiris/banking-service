@@ -17,17 +17,14 @@ package lk.example.bankingservice.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import lk.example.bankingservice.model.Account;
+import lk.example.bankingservice.model.CardDetail;
 
 /**
- * Date :2022-08-22. This the interface AccountRepository
+ * Date :2022-08-22. This the interface CardDetailRepository
  *
  * @author Jasintha Peiris
  */
 @Repository
-public interface AccountRepository extends CrudRepository<Account, Integer> {
-
-	Account findByAccountNumber(int id);
-
-
+public interface CardDetailRepository extends CrudRepository<CardDetail, Integer> {
+	CardDetail findByCardNumber(int cardNumber);
 }

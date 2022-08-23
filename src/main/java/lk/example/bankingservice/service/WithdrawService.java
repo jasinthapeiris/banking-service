@@ -31,6 +31,7 @@ import lk.example.bankingservice.model.Currency;
 import lk.example.bankingservice.repository.AccountRepository;
 import lk.example.bankingservice.repository.CardDetailRepository;
 import lk.example.bankingservice.util.Constant;
+import lk.example.bankingservice.util.CurrencyConverted;
 
 /**
  * Date :2022-08-222. This class process the crud CardDetailService class
@@ -44,6 +45,7 @@ public class WithdrawService {
 
 	private final AccountRepository accountRepository;
 	private final CardDetailRepository cardDetailRepository;
+	private final CurrencyConverted currencyConverted;
 
 	/**
 	 * withdraw
@@ -53,7 +55,7 @@ public class WithdrawService {
 	 */
 	public Account withdraw(Currency currency) {
 		log.debug("WithdrawService withdraw method calling.");
-		double amount = convertedAmountUSD(currency);
+		double amount = currencyConverted.convertedAmountUSD(currency);
 		CardDetail cardDetail = cardDetailRepository.findByCardNumber(currency.getNumericCode());
 		Account account = cardDetail.getAccount();
 		double existAmount = Double.parseDouble(account.getAmount());
@@ -65,20 +67,5 @@ public class WithdrawService {
 			throw new ResourceNotFoundException(Constant.BALANCE_NOT_ENOUGH);
 		}
 		return account;
-	}
-
-	/**
-	 * convertedAmountUSD
-	 * 
-	 * @param currency
-	 * @return double value
-	 */
-	public double convertedAmountUSD(Currency currency) {
-		MonetaryAmount oneDollar = Monetary.getDefaultAmountFactory().setCurrency("USD").setNumber(currency.getAmount())
-				.create();
-		CurrencyConversion conversionEUR = MonetaryConversions.getConversion(currency.getCurrencyCode());
-		MonetaryAmount convertedAmountUSDtoOther = oneDollar.with(conversionEUR);
-		NumberValue value = convertedAmountUSDtoOther.getNumber();
-		return Double.parseDouble(value.toString());
 	}
 }

@@ -33,4 +33,5 @@ public class Constant {
 	public static final String ID_NUMBER_TYPE_NOT_FOUND = "Id Number Type Not Found";
 	public static final String ID_NUMBER_NOT_FOUND = "Id Number Not Found";
 	public static final String EMBED_NAME_NOT_FOUND = "Embed Name Not Found";
+	public static final String BALANCE_NOT_ENOUGH = "your account balance is not enough";
 }

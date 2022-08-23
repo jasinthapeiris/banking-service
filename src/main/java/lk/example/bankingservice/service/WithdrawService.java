@@ -23,11 +23,14 @@ import javax.money.NumberValue;
 import javax.money.convert.CurrencyConversion;
 import javax.money.convert.MonetaryConversions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import lk.example.bankingservice.exception.ResourceNotFoundException;
 import lk.example.bankingservice.model.Account;
 import lk.example.bankingservice.model.CardDetail;
 import lk.example.bankingservice.model.Currency;
 import lk.example.bankingservice.repository.AccountRepository;
 import lk.example.bankingservice.repository.CardDetailRepository;
+import lk.example.bankingservice.util.Constant;
 
 /**
  * Date :2022-08-222. This class process the crud CardDetailService class
@@ -37,27 +40,31 @@ import lk.example.bankingservice.repository.CardDetailRepository;
 @Slf4j
 @org.springframework.stereotype.Component
 @RequiredArgsConstructor(onConstructor = @__({ @Autowired }))
-public class DepositService {
+public class WithdrawService {
 
 	private final AccountRepository accountRepository;
 	private final CardDetailRepository cardDetailRepository;
 
 	/**
-	 * deposit
+	 * withdraw
 	 * 
 	 * @param currency
 	 * @return accountBalance
 	 */
-	public Account deposit(Currency currency) {
-		log.debug("DepositService deposit method calling.");
+	public Account withdraw(Currency currency) {
+		log.debug("WithdrawService withdraw method calling.");
 		double amount = convertedAmountUSD(currency);
 		CardDetail cardDetail = cardDetailRepository.findByCardNumber(currency.getNumericCode());
 		Account account = cardDetail.getAccount();
 		double existAmount = Double.parseDouble(account.getAmount());
-		double total = existAmount + amount;
-		account.setAmount(String.valueOf(total));
-		Account savedCardDetail = accountRepository.save(account);
-		return savedCardDetail;
+		if(existAmount>amount) {
+			double total = existAmount - amount;
+			account.setAmount(String.valueOf(total));
+			account = accountRepository.save(account);
+		}else {
+			throw new ResourceNotFoundException(Constant.BALANCE_NOT_ENOUGH);
+		}
+		return account;
 	}
 
 	/**

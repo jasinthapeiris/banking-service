@@ -13,7 +13,7 @@
  *  without written authorization from the Jasintha Peiris
  *  All Rights Reserved.
  */
-package lk.example.bankingservice.service;
+package lk.example.bankingservice.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,42 +23,37 @@ import javax.money.NumberValue;
 import javax.money.convert.CurrencyConversion;
 import javax.money.convert.MonetaryConversions;
 import org.springframework.beans.factory.annotation.Autowired;
-import lk.example.bankingservice.model.Account;
-import lk.example.bankingservice.model.CardDetail;
+
 import lk.example.bankingservice.model.Currency;
-import lk.example.bankingservice.repository.AccountRepository;
-import lk.example.bankingservice.repository.CardDetailRepository;
-import lk.example.bankingservice.util.CurrencyConverted;
 
 /**
- * Date :2022-08-222. This class process the crud CardDetailService class
+ * Date :2022-08-22. This class process the crud CardDetailService class
  *
  * @author Jasintha Peiris
  */
 @Slf4j
 @org.springframework.stereotype.Component
 @RequiredArgsConstructor(onConstructor = @__({ @Autowired }))
-public class DepositService {
-
-	private final AccountRepository accountRepository;
-	private final CardDetailRepository cardDetailRepository;
-	private final CurrencyConverted currencyConverted;
-
+public class CurrencyConverted {
 	/**
-	 * deposit
+	 * convertedAmountUSD
 	 * 
 	 * @param currency
-	 * @return accountBalance
+	 * @return double value
 	 */
-	public Account deposit(Currency currency) {
-		log.debug("DepositService deposit method calling.");
-		double amount = currencyConverted.convertedAmountUSD(currency);
-		CardDetail cardDetail = cardDetailRepository.findByCardNumber(currency.getNumericCode());
-		Account account = cardDetail.getAccount();
-		double existAmount = Double.parseDouble(account.getAmount());
-		double total = existAmount + amount;
-		account.setAmount(String.valueOf(total));
-		Account savedCardDetail = accountRepository.save(account);
-		return savedCardDetail;
+	/**
+	 * convertedAmountUSD
+	 * 
+	 * @param currency
+	 * @return double value
+	 */
+	public double convertedAmountUSD(Currency currency) {
+		log.debug("CurrencyConverted convertedAmountUSD method calling.");
+		MonetaryAmount otherCurrency = Monetary.getDefaultAmountFactory().setCurrency(currency.getCurrencyCode())
+				.setNumber(currency.getAmount()).create();
+		CurrencyConversion conversionUSD = MonetaryConversions.getConversion("USD");
+		MonetaryAmount convertedAmountOtherToUSD = otherCurrency.with(conversionUSD);
+		NumberValue value = convertedAmountOtherToUSD.getNumber();
+		return Double.parseDouble(value.toString());
 	}
 }
